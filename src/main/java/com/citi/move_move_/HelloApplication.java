@@ -22,7 +22,6 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
 
         stage.setOnCloseRequest(event -> {
-            event.consume();
             minimizeToTray(stage);
         });
         stage.show();
@@ -42,11 +41,18 @@ public class HelloApplication extends Application {
                 trayIcon.setToolTip("JavaFX Application");
 
                 // 设置点击托盘图标时的事件处理
-                trayIcon.addActionListener(event -> Platform.runLater(() -> {
+                PopupMenu menu = new PopupMenu();
+                MenuItem showMenu = new MenuItem("Main menu");
+                MenuItem exitMenu = new MenuItem("Exit");
+                showMenu.addActionListener(event -> {
                     stage.setIconified(false); // 还原窗口
+                    stage.show();
                     stage.toFront(); // 将窗口显示在最前面
-                }));
-
+                });
+                exitMenu.addActionListener(event -> System.exit(0));
+                menu.add(showMenu);
+                menu.add(exitMenu);
+                trayIcon.setPopupMenu(menu);
                 // 获取系统托盘对象
                 SystemTray tray = SystemTray.getSystemTray();
 
